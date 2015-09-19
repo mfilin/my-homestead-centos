@@ -1,0 +1,35 @@
+{
+    "example" : {
+        "name" : "example",
+        "provider": "virtualbox",
+        "cpus" : 2,
+        "memory": 2048,
+        "network": {
+            "forwarded_port": {
+                "host" : 8000,
+                "guest" : 8000
+            },
+            "private_network" : {
+                "ip" : "192.168.23.36"
+            }
+        },
+        "hosts" : {
+            "hostname" : "www.example.com",
+            "host_alias" : ["example.com"]
+        },
+        "synced_folders" : [
+            {
+                "host" : "./code",
+                "guest" : "/home/vagrant/example",
+                "type" : "nts"
+            }
+        ],
+        "provision" : [
+            {
+                "type" : "",
+                "action": "",
+                "path": ""
+            }
+        ]
+    }
+}
