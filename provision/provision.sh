@@ -6,10 +6,10 @@
     # Install epel-release-7
     rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-
+    
     yum clean all
 
-    PACKAGES="httpd mariadb-server mariadb php php-mysql php-mcrypt php-common curl tree vim unzip"
+    PACKAGES="httpd mariadb-server mariadb php56w php56w-opcache php56w-mcrypt php56w-common curl tree vim unzip"
 
     debconf-set-selections <<< "mysql-server mysql-server/root_password password password"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password password"
