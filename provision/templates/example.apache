@@ -2,9 +2,9 @@
     ServerAdmin webmaster@localhost
 
     ServerName example.local
-    DocumentRoot /home/vagrant/my-homestead/public
+    DocumentRoot /home/vagrant/example/public
 
-    <Directory /home/vagrant/my-homestead/public/ >
+    <Directory /home/vagrant/example/public/ >
         Options Indexes FollowSymLinks MultiViews
         AllowOverride All
         Require all granted
@@ -18,11 +18,11 @@
         Allow from all
     </Directory>
 
-    ErrorLog /var/log/httpd/my-homestead_error.log
+    ErrorLog /var/log/httpd/example_error.log
 
     LogLevel warn
 
-    CustomLog /var/log/apache2/access.log combined
+    CustomLog /var/log/httpd/access.log combined
 
     Alias /doc/ "/usr/share/doc/"
         <Directory "/usr/share/doc/">

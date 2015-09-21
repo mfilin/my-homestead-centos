@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
     yum update
     yum clean all
 
@@ -8,8 +7,9 @@
     rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
 
-    PACKAGES="httpd mariadb-server mariadb php php-mysql php-mcrypt php-common curl tree vim"
+    yum clean all
 
+    PACKAGES="httpd mariadb-server mariadb php php-mysql php-mcrypt php-common curl tree vim unzip"
 
     debconf-set-selections <<< "mysql-server mysql-server/root_password password password"
     debconf-set-selections <<< "mysql-server mysql-server/root_password_again password password"
@@ -17,24 +17,35 @@
     echo "Install $PACKAGES"
     yum install $PACKAGES -y
 
-    echo "INIT SERVICES....."
+    echo "Init services....."
 
-    echo "INIT APACHE SERVICE"
-    systemctl start httpd.service
+    echo "Init apache service"
     systemctl enable httpd.service
-    echo "INIT MYSQL SERVER...."
+    echo "Init mysql server...."
     systemctl start mariadb
     systemctl enable mariadb.service
-
-    #create sites httpd folders
-    mkdir /etc/httpd/sites-available
-    mkdir /etc/httpd/sites-enabled
-    cp -f /home/vagrant/templates/httpd.conf /etc/httpd/conf/httpd.conf
-
-    cp /home/vagrant/provision/templates/example.apache /etc/httpd/sites-available/example.conf
-    ln -s /etc/httpd/sites-available/example.conf /etc/httpd/sites-enabled/example.conf
-    apachectl restart
 
     echo "Install composer"
     curl  -k -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
+
+    echo "Install laravel to ./code"
+    #install laravel 5.1.6 to code folder
+    wget https://github.com/laravel/laravel/archive/master.zip
+    unzip master.zip
+    cp -r laravel-master/* example/
+    rm master.zip
+    rm -r laravel-master
+
+    echo "Create www folders"
+    #create sites httpd folders
+    mkdir /etc/httpd/sites-available
+    mkdir /etc/httpd/sites-enabled
+    cp -f /home/vagrant/provision/templates/httpd.conf /etc/httpd/conf/httpd.conf
+
+    echo "Create apache virtual host"
+    cp /home/vagrant/provision/templates/example.apache /etc/httpd/sites-available/example.conf
+    ln -s /etc/httpd/sites-available/example.conf /etc/httpd/sites-enabled/example.conf
+    systemctl start httpd.service
+
+    yum clean all
