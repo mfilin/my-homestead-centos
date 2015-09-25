@@ -1,35 +1,14 @@
 <VirtualHost *:80>
-    ServerAdmin webmaster@localhost
-
-    ServerName example.local
-    DocumentRoot /home/vagrant/example/public
-
-    <Directory /home/vagrant/example/public/ >
-        Options Indexes FollowSymLinks MultiViews
-        AllowOverride All
-        Require all granted
-    </Directory>
-
-    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
-    <Directory "/usr/lib/cgi-bin">
-        AllowOverride None
-        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
-        Order allow,deny
-        Allow from all
-    </Directory>
-
-    ErrorLog /var/log/httpd/example_error.log
-
-    LogLevel warn
-
-    CustomLog /var/log/httpd/access.log combined
-
-    Alias /doc/ "/usr/share/doc/"
-        <Directory "/usr/share/doc/">
-        Options Indexes MultiViews FollowSymLinks
-        AllowOverride None
-        Order deny,allow
-        Deny from all
-        Allow from 127.0.0.0/255.0.0.0 ::1/128
-    </Directory>
+        ServerName example.app
+        DocumentRoot "/home/vagrant/example/public"
+                <Directory "/home/vagrant/example/public">
+                Options Indexes FollowSymLinks MultiViews
+                        AllowOverride All
+                        Require all granted
+           </Directory>
+        <IfModule mpm_peruser_module>
+                ServerEnvironment apache apache
+        </IfModule>
+        ErrorLog  /var/log/httpd/example.app-error.log
+        CustomLog /var/log/httpd/example.app-access.log combined
 </VirtualHost>
