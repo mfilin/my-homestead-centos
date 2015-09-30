@@ -9,6 +9,8 @@
 
     yum clean all
 
+    $DATABASE_PASS="password"
+
     PACKAGES="httpd mariadb mariadb-server php56w php56w-opcache php56w-mcrypt php56w-mysql php56w-pear php56w-pdo php56w-mbstring php56w-common curl tree vim unzip"
     PACKAGES="$PACKAGES policycoreutils policycoreutils-python selinux-policy selinux-policy-targeted"
     PACKAGES="$PACKAGES libselinux-utils setroubleshoot-server setools setools-console mcstrans wget"
@@ -25,12 +27,16 @@
     systemctl enable mariadb.service
     systemctl start mariadb.service
 
-    mysqladmin -u root password "password"
-    mysqladmin -u root --password="password" password "password"
-    mysql -u root -ppassword -e "create user homestead identified by 'homestead';"
-    mysql -u root -ppassword -e "create database homestead;"
-    mysql -u root -ppassword -e "grant all privileges on homestead.* to homestead;"
-    mysql -u root -ppassword -e "use homestead; set global storage_engine=INNODB"
+    mysqladmin -u root password "$DATABASE_PASS"
+    mysql -u root -p"$DATABASE_PASS" -e "UPDATE mysql.user SET Password=PASSWORD('$DATABASE_PASS') WHERE User='root'"
+    mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')"
+    mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.user WHERE User=''"
+    mysql -u root -p"$DATABASE_PASS" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'"
+    mysql -u root -p"$DATABASE_PASS" -e "FLUSH PRIVILEGES"
+    mysql -u root -p"$DATABASE_PASS" -e "create user homestead identified by 'homestead';"
+    mysql -u root -p"$DATABASE_PASS" -e "create database homestead;"
+    mysql -u root -p"$DATABASE_PASS" -e "grant all privileges on homestead.* to homestead;"
+    mysql -u root -p"$DATABASE_PASS" -e "use homestead; set global storage_engine=INNODB"
 
     echo "Install composer"
     curl  -k -sS https://getcomposer.org/installer | php
