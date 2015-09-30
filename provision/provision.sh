@@ -9,12 +9,10 @@
 
     yum clean all
 
-    PACKAGES="httpd mariadb-server mariadb php56w php56w-opcache php56w-mcrypt php56w-pear php56w-pdo php56w-mbstring php56w-common curl tree vim unzip"
+    PACKAGES="httpd mariadb mariadb-server php56w php56w-opcache php56w-mcrypt php56w-mysql php56w-pear php56w-pdo php56w-mbstring php56w-common curl tree vim unzip"
     PACKAGES="$PACKAGES policycoreutils policycoreutils-python selinux-policy selinux-policy-targeted"
     PACKAGES="$PACKAGES libselinux-utils setroubleshoot-server setools setools-console mcstrans wget"
 
-    debconf-set-selections <<< "mysql-server mysql-server/root_password password password"
-    debconf-set-selections <<< "mysql-server mysql-server/root_password_again password password"
 
     echo "Install $PACKAGES"
     yum install $PACKAGES -y
@@ -24,8 +22,15 @@
     echo "Init apache service"
     systemctl enable httpd.service
     echo "Init mysql server...."
-    systemctl start mariadb
     systemctl enable mariadb.service
+    systemctl start mariadb.service
+
+    mysqladmin -u root password "password"
+    mysqladmin -u root --password="password" password "password"
+    mysql -u root -ppassword -e "create user homestead identified by 'homestead';"
+    mysql -u root -ppassword -e "create database homestead;"
+    mysql -u root -ppassword -e "grant all privileges on homestead.* to homestead;"
+    mysql -u root -ppassword -e "use homestead; set global storage_engine=INNODB"
 
     echo "Install composer"
     curl  -k -sS https://getcomposer.org/installer | php
